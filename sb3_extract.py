@@ -42,5 +42,4 @@ for aa in a:
 		print("FFMPEGed it: "+aa.name[0:-4]+".wav")
 	"""
 print("Done")
-print()
-print()
+os.remove("project.json")
