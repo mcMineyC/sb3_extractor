@@ -1,6 +1,12 @@
 import sb3
 import zipfile as z
-import sys, os, json
+import sys, os, json, shutil
+
+if(not os.path.exists("out")):
+	os.mkdir("out")
+else:
+	shutil.rmtree("out")
+	os.mkdir("out")
 
 with z.ZipFile(sys.argv[1], "r") as zr:
 	zr.extract("project.json")
@@ -15,11 +21,6 @@ s, a = sb3.open_sb3(sys.argv[1])
 
 for aa in a:
 	print("Processing "+aa.name+"...")
-	if(aa.name[0:len(aa.name)-4] != ".mp3"):
-		print("File is not an MP3")
-		pass
-	else:
-		print("Writing file")
 	realName = ""
 	for x in list:
 		#print(x["assetId"]+".wav")
@@ -27,19 +28,15 @@ for aa in a:
 			realName = x["name"]+"."+x["dataFormat"]
 	#print("RN: "+realName)
 	if realName == "":
-		print()
 		pass
 	else:
-
-		f = open(realName, "wb")
+		f = open("out/"+aa.name, "wb")
 		nb = f.write(aa.read())
 		f.close()
 		print("\tWrote "+str(nb)+" bytes")
-	"""
-	if aa.name[-4:len(aa.name)] == ".mp33333":
-		os.system("ffmpeg -i "+aa.name+" "+aa.name[0:-4]+".wav")
-		os.remove(aa.name)
-		print("FFMPEGed it: "+aa.name[0:-4]+".wav")
-	"""
+		os.system("ffmpeg -i \"out/"+aa.name+"\" \"out/"+realName.split(".")[0]+".mp3\"")
+		os.remove("out/"+aa.name)
+		print("FFMPEGed it: out/"+realName.split(".")[0]+".mp3")
+	
 print("Done")
 os.remove("project.json")
